@@ -41,6 +41,44 @@ export type Database = {
           },
         ]
       }
+      applications: {
+        Row: {
+          cover_letter: string
+          email: string
+          id: string
+          job_id: string
+          name: string
+          resume_link: string
+          submitted_at: string
+        }
+        Insert: {
+          cover_letter: string
+          email: string
+          id?: string
+          job_id: string
+          name: string
+          resume_link: string
+          submitted_at?: string
+        }
+        Update: {
+          cover_letter?: string
+          email?: string
+          id?: string
+          job_id?: string
+          name?: string
+          resume_link?: string
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           content: string
@@ -166,6 +204,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      jobs: {
+        Row: {
+          category: string
+          company: string
+          created_at: string
+          description: string
+          id: string
+          location: string
+          salary_range: string
+          title: string
+        }
+        Insert: {
+          category: string
+          company: string
+          created_at?: string
+          description: string
+          id?: string
+          location: string
+          salary_range: string
+          title: string
+        }
+        Update: {
+          category?: string
+          company?: string
+          created_at?: string
+          description?: string
+          id?: string
+          location?: string
+          salary_range?: string
+          title?: string
+        }
+        Relationships: []
       }
       payments: {
         Row: {

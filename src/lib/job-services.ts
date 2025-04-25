@@ -1,120 +1,145 @@
-
+import { supabase } from "@/integrations/supabase/client";
 import { Job, Application, JobFilter } from "@/types";
-import { mockData, delay } from "@/mock/data";
 import { toast } from "sonner";
+import { mockData, delay } from "@/mock/data";
 
-// Simulated server functions
 export async function getAllJobs(filter?: JobFilter): Promise<Job[]> {
-  // Simulate network delay
-  await delay(500);
-  
-  let filteredJobs = [...mockData.jobs];
+  let query = supabase.from('jobs').select('*');
   
   if (filter) {
     if (filter.search) {
       const searchTerm = filter.search.toLowerCase();
-      filteredJobs = filteredJobs.filter(job => 
-        job.title.toLowerCase().includes(searchTerm) || 
-        job.description.toLowerCase().includes(searchTerm) ||
-        job.company.toLowerCase().includes(searchTerm)
+      query = query.or(
+        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,company.ilike.%${searchTerm}%`
       );
     }
     
     if (filter.category && filter.category !== "All") {
-      filteredJobs = filteredJobs.filter(job => job.category === filter.category);
+      query = query.eq('category', filter.category);
     }
     
     if (filter.location && filter.location !== "All") {
-      filteredJobs = filteredJobs.filter(job => job.location === filter.location);
+      query = query.eq('location', filter.location);
     }
     
     if (filter.salary && filter.salary !== "All") {
       // Simple salary filter - would be more sophisticated in real app
       if (filter.salary === "High") {
-        filteredJobs = filteredJobs.filter(job => 
-          parseInt(job.salary_range.split(' - ')[1].replace('$', '').replace(',', '')) >= 130000
-        );
+        // You might want to parse the salary_range and do more complex filtering
+        query = query.gte('salary_range', '$130,000');
       } else if (filter.salary === "Medium") {
-        filteredJobs = filteredJobs.filter(job => {
-          const min = parseInt(job.salary_range.split(' - ')[0].replace('$', '').replace(',', ''));
-          const max = parseInt(job.salary_range.split(' - ')[1].replace('$', '').replace(',', ''));
-          return min >= 80000 && max < 130000;
-        });
+        query = query.and(`salary_range.gte.$80,000`, `salary_range.lt.$130,000`);
       } else if (filter.salary === "Low") {
-        filteredJobs = filteredJobs.filter(job => 
-          parseInt(job.salary_range.split(' - ')[0].replace('$', '').replace(',', '')) < 80000
-        );
+        query = query.lt('salary_range', '$80,000');
       }
     }
   }
   
-  return filteredJobs;
+  const { data, error } = await query;
+  
+  if (error) {
+    console.error("Error fetching jobs:", error);
+    throw error;
+  }
+  
+  return data as Job[];
 }
 
 export async function getJobById(id: string): Promise<Job | undefined> {
-  await delay(300);
-  return mockData.jobs.find(job => job.id === id);
+  const { data, error } = await supabase
+    .from('jobs')
+    .select('*')
+    .eq('id', id)
+    .single();
+  
+  if (error) {
+    console.error("Error fetching job:", error);
+    return undefined;
+  }
+  
+  return data as Job;
 }
 
 export async function createJob(jobData: Omit<Job, 'id' | 'created_at'>): Promise<Job> {
-  await delay(800);
+  const { data, error } = await supabase
+    .from('jobs')
+    .insert(jobData)
+    .select()
+    .single();
   
-  const newJob: Job = {
-    id: (mockData.jobs.length + 1).toString(),
-    ...jobData,
-    created_at: new Date().toISOString()
-  };
+  if (error) {
+    console.error("Error creating job:", error);
+    toast.error("Failed to create job");
+    throw error;
+  }
   
-  mockData.jobs.push(newJob);
   toast.success("Job created successfully!");
-  return newJob;
+  return data as Job;
 }
 
 export async function updateJob(id: string, jobData: Partial<Job>): Promise<Job | undefined> {
-  await delay(600);
+  const { data, error } = await supabase
+    .from('jobs')
+    .update(jobData)
+    .eq('id', id)
+    .select()
+    .single();
   
-  const jobIndex = mockData.jobs.findIndex(job => job.id === id);
-  if (jobIndex === -1) return undefined;
-  
-  mockData.jobs[jobIndex] = {
-    ...mockData.jobs[jobIndex],
-    ...jobData
-  };
+  if (error) {
+    console.error("Error updating job:", error);
+    toast.error("Failed to update job");
+    return undefined;
+  }
   
   toast.success("Job updated successfully!");
-  return mockData.jobs[jobIndex];
+  return data as Job;
 }
 
 export async function deleteJob(id: string): Promise<boolean> {
-  await delay(500);
+  const { error } = await supabase
+    .from('jobs')
+    .delete()
+    .eq('id', id);
   
-  const initialLength = mockData.jobs.length;
-  mockData.jobs = mockData.jobs.filter(job => job.id !== id);
-  
-  if (mockData.jobs.length < initialLength) {
-    toast.success("Job deleted successfully!");
-    return true;
+  if (error) {
+    console.error("Error deleting job:", error);
+    toast.error("Failed to delete job");
+    return false;
   }
-  return false;
+  
+  toast.success("Job deleted successfully!");
+  return true;
 }
 
 export async function submitApplication(application: Omit<Application, 'id' | 'submitted_at'>): Promise<Application> {
-  await delay(1000);
+  const { data, error } = await supabase
+    .from('applications')
+    .insert(application)
+    .select()
+    .single();
   
-  const newApplication: Application = {
-    id: (mockData.applications.length + 1).toString(),
-    ...application,
-    submitted_at: new Date().toISOString()
-  };
+  if (error) {
+    console.error("Error submitting application:", error);
+    toast.error("Failed to submit application");
+    throw error;
+  }
   
-  mockData.applications.push(newApplication);
   toast.success("Application submitted successfully!");
-  return newApplication;
+  return data as Application;
 }
 
 export async function getApplicationsByJobId(jobId: string): Promise<Application[]> {
-  await delay(400);
-  return mockData.applications.filter(app => app.job_id === jobId);
+  const { data, error } = await supabase
+    .from('applications')
+    .select('*')
+    .eq('job_id', jobId);
+  
+  if (error) {
+    console.error("Error fetching applications:", error);
+    throw error;
+  }
+  
+  return data as Application[];
 }
 
 // Helper functions for filtering options
