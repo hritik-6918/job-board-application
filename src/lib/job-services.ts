@@ -1,7 +1,7 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Job, Application, JobFilter } from "@/types";
 import { toast } from "sonner";
-import { mockData, delay } from "@/mock/data";
 
 export async function getAllJobs(filter?: JobFilter): Promise<Job[]> {
   let query = supabase.from('jobs').select('*');
@@ -23,15 +23,25 @@ export async function getAllJobs(filter?: JobFilter): Promise<Job[]> {
     }
     
     if (filter.salary && filter.salary !== "All") {
-      const salaryRange = filter.salary;
       try {
-        // Extract the numeric value from salary_range for comparison
-        if (salaryRange === "High") {
-          query = query.or('salary_range.ilike.%130%,salary_range.ilike.%140%,salary_range.ilike.%150%,salary_range.ilike.%160%,salary_range.ilike.%170%,salary_range.ilike.%180%,salary_range.ilike.%190%,salary_range.ilike.%200%');
-        } else if (salaryRange === "Medium") {
-          query = query.or('salary_range.ilike.%80%,salary_range.ilike.%90%,salary_range.ilike.%100%,salary_range.ilike.%110%,salary_range.ilike.%120%');
-        } else if (salaryRange === "Low") {
-          query = query.or('salary_range.ilike.%30%,salary_range.ilike.%40%,salary_range.ilike.%50%,salary_range.ilike.%60%,salary_range.ilike.%70%');
+        // More comprehensive salary range filtering
+        if (filter.salary === "High") {
+          query = query.or(
+            'salary_range.ilike.%130k%,salary_range.ilike.%140k%,salary_range.ilike.%150k%,salary_range.ilike.%160k%,' +
+            'salary_range.ilike.%170k%,salary_range.ilike.%180k%,salary_range.ilike.%190k%,salary_range.ilike.%200k%,' +
+            'salary_range.ilike.%$130%,salary_range.ilike.%$140%,salary_range.ilike.%$150%,salary_range.ilike.%$160%,' +
+            'salary_range.ilike.%$170%,salary_range.ilike.%$180%,salary_range.ilike.%$190%,salary_range.ilike.%$200%'
+          );
+        } else if (filter.salary === "Medium") {
+          query = query.or(
+            'salary_range.ilike.%80k%,salary_range.ilike.%90k%,salary_range.ilike.%100k%,salary_range.ilike.%110k%,salary_range.ilike.%120k%,' +
+            'salary_range.ilike.%$80%,salary_range.ilike.%$90%,salary_range.ilike.%$100%,salary_range.ilike.%$110%,salary_range.ilike.%$120%'
+          );
+        } else if (filter.salary === "Low") {
+          query = query.or(
+            'salary_range.ilike.%30k%,salary_range.ilike.%40k%,salary_range.ilike.%50k%,salary_range.ilike.%60k%,salary_range.ilike.%70k%,' +
+            'salary_range.ilike.%$30%,salary_range.ilike.%$40%,salary_range.ilike.%$50%,salary_range.ilike.%$60%,salary_range.ilike.%$70%'
+          );
         }
       } catch (error) {
         console.error("Error parsing salary range:", error);
