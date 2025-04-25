@@ -76,9 +76,13 @@ const JobApplication = () => {
     
     setSubmitting(true);
     try {
+      // Ensure we're passing properly typed data to the function
       await submitApplication({
         job_id: jobId,
-        ...data,
+        name: data.name, // Ensure non-optional fields
+        email: data.email,
+        resume_link: data.resume_link,
+        cover_letter: data.cover_letter,
       });
       
       toast.success("Application submitted successfully!");

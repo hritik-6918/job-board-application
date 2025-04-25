@@ -60,7 +60,15 @@ const CreateJob = () => {
   const onSubmit = async (data: JobFormValues) => {
     setSubmitting(true);
     try {
-      const newJob = await createJob(data);
+      // Ensure we're passing properly typed data to the function
+      const newJob = await createJob({
+        title: data.title,
+        company: data.company,
+        description: data.description,
+        category: data.category,
+        location: data.location,
+        salary_range: data.salary_range,
+      });
       toast.success("Job posted successfully!");
       navigate(`/company/jobs`);
     } catch (error) {
