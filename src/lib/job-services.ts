@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Job, Application, JobFilter } from "@/types";
 import { toast } from "sonner";
@@ -24,28 +23,37 @@ export async function getAllJobs(filter?: JobFilter): Promise<Job[]> {
     }
     
     if (filter.salary && filter.salary !== "All") {
-      // Simple salary filter - would be more sophisticated in real app
-      if (filter.salary === "High") {
-        // Filter for high salary (greater than or equal to $130,000)
-        query = query.ilike('salary_range', '%$1%');
-      } else if (filter.salary === "Medium") {
-        // Filter for medium salary ($80,000 to $130,000)
-        query = query.or('salary_range.ilike.%$8%,salary_range.ilike.%$9%');
-      } else if (filter.salary === "Low") {
-        // Filter for low salary (less than $80,000)
-        query = query.or('salary_range.ilike.%$3%,salary_range.ilike.%$4%,salary_range.ilike.%$5%,salary_range.ilike.%$6%,salary_range.ilike.%$7%');
+      const salaryRange = filter.salary;
+      try {
+        // Extract the numeric value from salary_range for comparison
+        if (salaryRange === "High") {
+          query = query.or('salary_range.ilike.%130%,salary_range.ilike.%140%,salary_range.ilike.%150%,salary_range.ilike.%160%,salary_range.ilike.%170%,salary_range.ilike.%180%,salary_range.ilike.%190%,salary_range.ilike.%200%');
+        } else if (salaryRange === "Medium") {
+          query = query.or('salary_range.ilike.%80%,salary_range.ilike.%90%,salary_range.ilike.%100%,salary_range.ilike.%110%,salary_range.ilike.%120%');
+        } else if (salaryRange === "Low") {
+          query = query.or('salary_range.ilike.%30%,salary_range.ilike.%40%,salary_range.ilike.%50%,salary_range.ilike.%60%,salary_range.ilike.%70%');
+        }
+      } catch (error) {
+        console.error("Error parsing salary range:", error);
       }
     }
   }
   
-  const { data, error } = await query;
-  
-  if (error) {
-    console.error("Error fetching jobs:", error);
-    throw error;
+  try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Error fetching jobs:", error);
+      toast.error("Failed to fetch jobs");
+      return [];
+    }
+    
+    return data as Job[];
+  } catch (error) {
+    console.error("Error in getAllJobs:", error);
+    toast.error("An unexpected error occurred");
+    return [];
   }
-  
-  return data as Job[];
 }
 
 export async function getJobById(id: string): Promise<Job | undefined> {
@@ -147,13 +155,9 @@ export async function getApplicationsByJobId(jobId: string): Promise<Application
 
 // Helper functions for filtering options
 export function getCategories(): string[] {
-  const categories = new Set<string>();
-  mockData.jobs.forEach(job => categories.add(job.category));
-  return Array.from(categories);
+  return ["Software Development", "Design", "Marketing", "Sales", "Customer Service", "Finance", "Other"];
 }
 
 export function getLocations(): string[] {
-  const locations = new Set<string>();
-  mockData.jobs.forEach(job => locations.add(job.location));
-  return Array.from(locations);
+  return ["Remote", "San Francisco", "New York", "London", "Berlin", "Singapore", "Other"];
 }
