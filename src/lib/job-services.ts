@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Job, Application, JobFilter } from "@/types";
 import { toast } from "sonner";
@@ -25,12 +26,14 @@ export async function getAllJobs(filter?: JobFilter): Promise<Job[]> {
     if (filter.salary && filter.salary !== "All") {
       // Simple salary filter - would be more sophisticated in real app
       if (filter.salary === "High") {
-        // You might want to parse the salary_range and do more complex filtering
-        query = query.gte('salary_range', '$130,000');
+        // Filter for high salary (greater than or equal to $130,000)
+        query = query.ilike('salary_range', '%$1%');
       } else if (filter.salary === "Medium") {
-        query = query.and(`salary_range.gte.$80,000`, `salary_range.lt.$130,000`);
+        // Filter for medium salary ($80,000 to $130,000)
+        query = query.or('salary_range.ilike.%$8%,salary_range.ilike.%$9%');
       } else if (filter.salary === "Low") {
-        query = query.lt('salary_range', '$80,000');
+        // Filter for low salary (less than $80,000)
+        query = query.or('salary_range.ilike.%$3%,salary_range.ilike.%$4%,salary_range.ilike.%$5%,salary_range.ilike.%$6%,salary_range.ilike.%$7%');
       }
     }
   }
