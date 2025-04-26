@@ -10,7 +10,7 @@ This project connects candidates and employers seamlessly:
 - **Candidates** can browse jobs, view job details, and apply.
 - **Employers** can post jobs, manage listings, and view applications.
 
-Hosted & deployable easily via **Vercel** platform: [Project Link]()
+Hosted & deployable easily via **Vercel** platform: [Project Link](https://job-board-application-mini.vercel.app/)
 
 ---
 
