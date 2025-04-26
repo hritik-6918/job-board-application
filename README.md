@@ -1,73 +1,104 @@
-# Welcome to your Lovable project
+# 💼 Job Board Application
 
-## Project info
+A modern, full-stack job board web application built with **React**, **TypeScript**, **Vite**, **Tailwind CSS**, and **Supabase** for managing job listings and applications.
 
-**URL**: https://lovable.dev/projects/4c6bbd6f-3181-492c-b73b-f21e192a70e3
+---
 
-## How can I edit this code?
+## 📊 Project Overview
 
-There are several ways of editing your application.
+This project connects candidates and employers seamlessly:
+- **Candidates** can browse jobs, view job details, and apply.
+- **Employers** can post jobs, manage listings, and view applications.
 
-**Use Lovable**
+Hosted & deployable easily via **Vercel** platform: [Project Link]()
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4c6bbd6f-3181-492c-b73b-f21e192a70e3) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 📦 Tech Stack
+- **Frontend:** React 18, TypeScript, Vite
+- **Styling:** Tailwind CSS 3, Shadcn UI components
+- **State Management:** React Query
+- **Routing:** React Router DOM
+- **Backend/DB:** Supabase
+- **Utilities:** Lucide React Icons, Date-fns
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🔧 Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
+- Node.js (Recommended: v18+)
+- npm (comes with Node.js)
 
-Follow these steps:
+### Local Setup
+```bash
+# 1. Clone the repository
+$ git clone <YOUR_REPOSITORY_URL>
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# 2. Navigate into the project folder
+$ cd hritik-6918-job-board-application
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 3. Install all dependencies
+$ npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 4. Run the development server
+$ npm run dev
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# The app will be running at http://localhost:8080
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔄 Development
 
-**Use GitHub Codespaces**
+### Useful Commands
+```bash
+# Start Dev Server
+npm run dev
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Build for Production
+npm run build
 
-## What technologies are used for this project?
+# Preview Production Build Locally
+npm run preview
 
-This project is built with:
+# Lint Codebase
+npm run lint
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Code Formatting & Linting
+- ESLint with TypeScript support
+- React Hooks and Refresh plugins enabled
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/4c6bbd6f-3181-492c-b73b-f21e192a70e3) and click on Share -> Publish.
+## 🔍 Features
 
-## Can I connect a custom domain to my Lovable project?
+### For Candidates
+- Browse job listings
+- Search and filter jobs by category, location, and salary
+- View job details
+- Apply for jobs
 
-Yes, you can!
+### For Employers
+- Post new job listings
+- Manage current job posts
+- View candidates' applications
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### UI Features
+- Fully Responsive (mobile + desktop)
+- Dark Mode support
+- Toast notifications and dialogs
+- Form validation with React Hook Form & Zod
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+
+## ✅ TODOs / Improvements
+- Role-based authentication (Candidate vs Employer)
+- Job Application email notifications
+- Company profiles and branding
+- Candidate profiles and resume uploads
+
+---
+
+> Made with ❤️ by Hritik Kumar
